@@ -9,8 +9,4 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-with app.app_context():
-    db.create_all()
-    print('Таблицы успешно созданы!')
-
-from . import api_views, error_handlers, utils, views
+from . import api_views, error_handlers, views

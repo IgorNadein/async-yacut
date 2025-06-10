@@ -59,3 +59,19 @@ flask db upgrade
 ```
 flask run
 ```
+
+После запуска проекта будут доступны:
+- [Главная страница](http://127.0.0.1:5000/) представляюцая основной функционал.
+- [Страница для загрузки файлов](http://127.0.0.1:5000/files)
+- API для POST (/api/id/) и GET ('/api/id/<short>/') зпросов 
+
+Техно-стек:
+- **Backend**: Flask, Flask-SQLAlchemy, Flask-Migrate
+- **База данных**: SQLite (для разработки), PostgreSQL (прод)
+- **Дополнительно**: Python-dotenv, Pytest (тестирование)
+- **Инфраструктура**: Git, GitHub
+
+Автор:
+**Игорь Надеин**  
+GitHub: [IgorNadein](https://github.com/IgorNadein)  
+Email: gari.music126@yandex.ru (mailtogari.music126@yandex.ru)

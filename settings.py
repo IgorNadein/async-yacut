@@ -2,6 +2,10 @@ import os
 
 
 class Config(object):
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI')
-    SECRET_KEY = os.getenv('SECRET_KEY')
-    DISK_TOKEN = 'y0__xDC8oWfAhjvoTggwICZuxN4XbC8doE1J4S2cvC7EkMCq7jCGQ'
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///db.sqlite')
+    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key')
+    DISK_TOKEN = os.getenv(
+        'DISK_TOKEN',
+        'y0__xDC8oWfAhjvoTggwICZuxN4XbC8doE1J4S2cvC7EkMCq7jCGQ'
+    )
+    REDIRECT_TO_URL_VIEW_NAME = 'redirect_to_url'

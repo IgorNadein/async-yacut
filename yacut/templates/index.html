@@ -39,48 +39,43 @@
         <div class="col-sm"></div>
       </div>
     </div>
-
-
-    
-  {% if short_url %}
-    <div class="container">
-      <div class="row">
-        <div class="col-sm"></div>
-        <div class="col-sm">
-          <div class="text-center">
-            <h5>Ваша новая ссылка готова:</h5>
-            <a href="{{ url_for('redirect_to_url', short_id=short_url, _external=True) }}" 
-              target="_blank" 
-              class="display-inline-block">
-              {{ url_for('redirect_to_url', short_id=short_url, _external=True) }}
-            </a>
+    {% if url_map %}
+      <div class="container">
+        <div class="row">
+          <div class="col-sm"></div>
+          <div class="col-sm">
+            <div class="text-center">
+              <h5>Ваша новая ссылка готова:</h5>
+              <a href="{{ url_map.get_short() }}" 
+                target="_blank" 
+                class="display-inline-block">
+                {{ url_map.get_short() }}
+              </a>
+            </div>
           </div>
+          <div class="col-sm"></div>
         </div>
-        <div class="col-sm"></div>
       </div>
-    </div>
-  {% endif %}
+    {% endif %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="container">
-          <div class="row ">
-            <div class="col-sm">
-            </div>
-            <div class="col-sm">
-              <p class="text-center">
-              {% for category, message in messages %}
-                <h5 class="text-center">
-                  {{ message }}
-                </h5>
-              {% endfor %}
-              </p>
-            </div>
-            <div class="col-sm">
-            </div>
+    {% with messages = get_flashed_messages() %}
+      <div class="container">
+        <div class="row ">
+          <div class="col-sm">
+          </div>
+          <div class="col-sm">
+            <p class="text-center">
+            {% for category, message in messages %}
+              <h5 class="text-center">
+                {{ message }}
+              </h5>
+            {% endfor %}
+            </p>
+          </div>
+          <div class="col-sm">
           </div>
         </div>
-      {% endif %}
+      </div>
     {% endwith %}
   </section>
 {% endblock %}

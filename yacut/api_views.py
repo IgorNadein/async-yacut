@@ -1,46 +1,40 @@
-from flask import jsonify, request, url_for
-from wtforms.validators import ValidationError
+from http import HTTPStatus
 
-from . import app, db
+from flask import jsonify, request
+
+from . import app
+from .constants import MESSAGES
 from .error_handlers import InvalidAPIUsage
 from .models import URLMap
-from .utils import get_unique_short_id
-from .validators import validate_custom_id
 
 
 @app.route('/api/id/', methods=['POST'])
-def create_short_url():
+def create_short():
 
     data = request.get_json()
+    model = URLMap()
     if not data or 'url' not in data:
-        raise InvalidAPIUsage('"url" является обязательным полем!')
+        raise InvalidAPIUsage(MESSAGES['missing_url_field'])
 
-    custom_id = data.get('custom_id')
+    short = data.get('custom_id')
     try:
-        validate_custom_id(custom_id)
-    except ValidationError as message:
-        raise InvalidAPIUsage(str(message), 400)
-
-    url_map = URLMap(
-        original=data['url'],
-        short=custom_id or get_unique_short_id()
-    )
-    db.session.add(url_map)
-    db.session.commit()
-
-    return jsonify({
-        'url': url_map.original,
-        'short_link': url_for(
-            'redirect_to_url',
-            short_id=url_map.short,
-            _external=True
+        url_map = model.create(
+            original=data['url'],
+            short=short
         )
-    }), 201
+        return jsonify({
+            'url': url_map.original,
+            'short_link': url_map.get_short()
+        }), HTTPStatus.CREATED
+    except ValueError as message:
+        raise InvalidAPIUsage(str(message))
 
 
-@app.route('/api/id/<short_id>/', methods=['GET'])
-def get_original_url(short_id):
-    url_map = URLMap.query.filter_by(short=short_id).first()
+@app.route('/api/id/<short>/', methods=['GET'])
+def get_original_url(short):
+    url_map = URLMap.query.filter_by(short=short).first()
     if not url_map:
-        raise InvalidAPIUsage('Указанный id не найден', 404)
-    return jsonify({'url': url_map.original}), 200
+        raise InvalidAPIUsage(
+            MESSAGES['id_not_found'], HTTPStatus.NOT_FOUND
+        )
+    return jsonify({'url': url_map.original})
