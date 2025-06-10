@@ -3,7 +3,7 @@
 Клонировать репозиторий и перейти в него в командной строке:
 
 ```
-git clone 
+git clone https://github.com/IgorNadein/async-yacut.git
 ```
 
 ```
@@ -38,13 +38,14 @@ python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Создать в директории проекта файл .env с четыремя переменными окружения:
+Создать в директории проекта файл .env с пятью переменными окружения:
 
 ```
 FLASK_APP=yacut
 FLASK_ENV=development
 SECRET_KEY=your_secret_key
-DB=sqlite:///db.sqlite3
+DATABASE_URI=sqlite:///db.sqlite3
+DISK_TOKEN=you_token
 ```
 
 Создать базу данных и применить миграции:
