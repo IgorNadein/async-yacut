@@ -1,3 +1,6 @@
+from http import HTTPStatus
+
+
 class DiskUploadError(Exception):
     """Базовое исключение для ошибок загрузки"""
 
@@ -12,11 +15,20 @@ class DiskUploadError(Exception):
         super().__init__(message)
 
 
-class ShortIDGenerationError(RuntimeError):
+class ShortIDGenerationError(Exception):
     """Кастомное исключение для ошибок генерации коротких ссылок"""
-    pass
 
 
-class FileUploadError(RuntimeError):
+class FileUploadError(Exception):
     """Кастомное исключение для ошибок загрузки файлов"""
-    pass
+
+
+class InvalidAPIUsage(Exception):
+    """Исключение для API"""
+    status_code = HTTPStatus.BAD_REQUEST
+
+    def __init__(self, message, status_code=None):
+        super().__init__()
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code

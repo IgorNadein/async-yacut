@@ -8,4 +8,3 @@ class Config(object):
         'DISK_TOKEN',
         'y0__xDC8oWfAhjvoTggwICZuxN4XbC8doE1J4S2cvC7EkMCq7jCGQ'
     )
-    REDIRECT_TO_URL_VIEW_NAME = 'redirect_to_url'

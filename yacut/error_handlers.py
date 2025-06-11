@@ -3,17 +3,8 @@ from http import HTTPStatus
 from flask import jsonify, render_template
 
 from . import app, db
-from .constants import MESSAGES
-
-
-class InvalidAPIUsage(Exception):
-    status_code = HTTPStatus.BAD_REQUEST
-
-    def __init__(self, message, status_code=None):
-        super().__init__()
-        self.message = message
-        if status_code is not None:
-            self.status_code = status_code
+from .constants import Messages
+from .exceptions import InvalidAPIUsage
 
 
 @app.errorhandler(InvalidAPIUsage)
@@ -35,12 +26,12 @@ def internal_error(error):
 @app.errorhandler(HTTPStatus.BAD_REQUEST)
 def handle_bad_request(error):
     return jsonify({
-        'message': MESSAGES['missing_body'],
+        'message': Messages.MISSING_BODY,
     }), HTTPStatus.BAD_REQUEST
 
 
 @app.errorhandler(HTTPStatus.UNSUPPORTED_MEDIA_TYPE)
 def handle_unsupported_media_type(error):
     return jsonify({
-        'message': MESSAGES['missing_body'],
+        'message': Messages.MISSING_BODY,
     }), HTTPStatus.BAD_REQUEST

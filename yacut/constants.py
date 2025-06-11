@@ -7,26 +7,34 @@ DOWNLOAD_LINK_URL = f'{API_HOST}{API_VERSION}/disk/resources/download'
 REQUEST_UPLOAD_URL = f'{API_HOST}{API_VERSION}/disk/resources/upload'
 MAX_LENGTH_ORIGINAL = 2048
 MAX_LENGTH_SHORT = 16
-RESERVED_NAMES = {'files'}
+RESERVED_SHORT = {'files'}
 ALLOWED_CHARS = string.ascii_letters + string.digits
-ALLOWED_CHARS_PATTERN = re.compile(f'^[{ALLOWED_CHARS}]+$')
+ALLOWED_CHARS_PATTERN = re.compile(f'^[{re.escape(ALLOWED_CHARS)}]+$')
+DEFAULT_SHORT_LENGTH = 6
+MAX_GENERATION_ATTEMPTS = 10
+REDIRECT_TO_URL_VIEW_NAME = 'redirect_to_url'
+SWAGGER_URL = '/api/docs'
+API_URL_DOCS = '/static/openapi.yml'
 
-MESSAGES = {
-    'missing_url_field': '"url" является обязательным полем!',
-    'name_conflict': 'Предложенный вариант короткой ссылки уже существует.',
-    'id_not_found': 'Указанный id не найден',
-    'missing_body': 'Отсутствует тело запроса',
-    'invalid_short_name': 'Указано недопустимое имя для короткой ссылки',
-    'generation_error': 'Не удалось создать ссылку за {max_attempts} попыток',
-    'upload_error': 'Ошибка при загрузке {file}: {error}',
-    'error_download_link': 'Не удалось получить ссылку на скачивание',
-    'server_error': 'Внутренняя ошибка сервера',
-    'generic_error': 'Ошибка: {error}',
-    'upload_url_error': 'Ошибка получения upload URL: {status}',
-    'download_url_error': 'Ошибка получения download URL: {status}',
-    'create': 'Создать',
-    'load': 'Загрузить',
-    'invalid_link_size': 'Недопустимый размер ссылки',
-    'invalid_URL': 'Некорректный URL',
-    'required_field': 'Обязательное поле'
-}
+
+class Messages:
+    MISSING_URL_FIELD = '"url" является обязательным полем!'
+    NAME_CONFLICT = 'Предложенный вариант короткой ссылки уже существует.'
+    ID_NOT_FOUND = 'Указанный id не найден'
+    MISSING_BODY = 'Отсутствует тело запроса'
+    INVALID_SHORT_NAME = 'Указано недопустимое имя для короткой ссылки'
+    GENERATION_ERROR = (
+        f'Не удалось создать ссылку за '
+        f'{MAX_GENERATION_ATTEMPTS} попыток'
+    )
+    UPLOAD_ERROR = 'Ошибка при загрузке {}: {}'
+    ERROR_DOWNLOAD_LINK = 'Не удалось получить ссылку на скачивание'
+    SERVER_ERROR = 'Внутренняя ошибка сервера'
+    GENERIC_ERROR = 'Ошибка: {}'
+    UPLOAD_URL_ERROR = 'Ошибка получения upload URL: {}'
+    DOWNLOAD_URL_ERROR = 'Ошибка получения download URL: {}'
+    CREATE = 'Создать'
+    LOAD = 'Загрузить'
+    INVALID_LINK_SIZE = 'Недопустимый размер ссылки'
+    INVALID_URL = 'Некорректный URL'
+    REQUIRED_FIELD = 'Обязательное поле'

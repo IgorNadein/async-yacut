@@ -4,9 +4,7 @@
 
 ```
 git clone https://github.com/IgorNadein/async-yacut.git
-```
 
-```
 cd yacut
 ```
 
@@ -64,6 +62,7 @@ flask run
 - [Главная страница](http://127.0.0.1:5000/) представляюцая основной функционал.
 - [Страница для загрузки файлов](http://127.0.0.1:5000/files)
 - API для POST (/api/id/) и GET ('/api/id/<short>/') зпросов 
+- [Документация к API](http://127.0.0.1:5000/api/docs)
 
 Техно-стек:
 - **Backend**: Flask, Flask-SQLAlchemy, Flask-Migrate
@@ -74,4 +73,4 @@ flask run
 Автор:
 **Игорь Надеин**  
 GitHub: [IgorNadein](https://github.com/IgorNadein)  
-Email: gari.music126@yandex.ru (mailtogari.music126@yandex.ru)
+Email: [gari.music126@yandex.ru](gari.music126@yandex.ru)
