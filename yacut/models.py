@@ -4,11 +4,12 @@ from datetime import datetime, timezone
 from flask import url_for
 
 from . import db
-from .constants import (ALLOWED_CHARS, ALLOWED_CHARS_PATTERN,
-                        DEFAULT_SHORT_LENGTH, MAX_GENERATION_ATTEMPTS,
-                        MAX_LENGTH_ORIGINAL, MAX_LENGTH_SHORT,
-                        REDIRECT_TO_URL_VIEW_NAME, RESERVED_SHORTS, Messages)
-from .exceptions import ShortIDGenerationError
+from .constants import (
+    ALLOWED_CHARS, ALLOWED_CHARS_PATTERN,
+    DEFAULT_SHORT_LENGTH, MAX_GENERATION_ATTEMPTS,
+    MAX_LENGTH_ORIGINAL, MAX_LENGTH_SHORT,
+    REDIRECT_TO_URL_VIEW_NAME, RESERVED_SHORTS, Messages
+)
 
 
 class URLMap(db.Model):
@@ -18,13 +19,16 @@ class URLMap(db.Model):
     timestamp = db.Column(db.DateTime,
                           default=lambda: datetime.now(timezone.utc))
 
+    class ShortGenerationError(Exception):
+        """Кастомное исключение для ошибок генерации коротких ссылок"""
+
     @staticmethod
     def validate_short(
         short: str,
-        check_length: bool = True,
-        check_chars: bool = True,
-        check_reserved: bool = True,
-        check_existence: bool = True
+        check_length: bool = False,
+        check_chars: bool = False,
+        check_reserved: bool = False,
+        check_existence: bool = False
     ):
         """
         Централизованная валидация короткой ссылки
@@ -44,12 +48,18 @@ class URLMap(db.Model):
             raise ValueError(Messages.NAME_CONFLICT)
 
     @staticmethod
-    def create(original, short=None, form=None):
-        if not form:
+    def create(original, short=None, validate=False):
+        if not validate:
             if len(original) > MAX_LENGTH_ORIGINAL:
                 raise ValueError(Messages.INVALID_LINK_SIZE)
             if short:
-                URLMap.validate_short(short)
+                URLMap.validate_short(
+                    short=short,
+                    check_length=True,
+                    check_chars=True,
+                    check_reserved=True,
+                    check_existence=True
+                )
         if not short:
             short = URLMap.get_unique_short()
         url_map_record = URLMap(original=original, short=short)
@@ -78,14 +88,14 @@ class URLMap(db.Model):
             )
             if not URLMap.get(short=short):
                 return short
-        raise ShortIDGenerationError(
+        raise URLMap.ShortGenerationError(
             Messages.GENERATION_ERROR
         )
 
     @staticmethod
     def batch_create(urls):
         return [
-            URLMap.create(original=url, form=True)
+            URLMap.create(original=url, validate=True)
             for url in urls
         ]
 

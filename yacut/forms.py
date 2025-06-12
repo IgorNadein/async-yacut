@@ -40,8 +40,8 @@ class URLMapForm(FlaskForm):
         try:
             URLMap.validate_short(
                 short=field.data,
-                check_length=False,
-                check_chars=False,
+                check_reserved=True,
+                check_existence=True
             )
         except ValueError as e:
             raise ValidationError(str(e))

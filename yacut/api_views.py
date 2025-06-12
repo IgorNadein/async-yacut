@@ -5,7 +5,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 
 from . import app
 from .constants import API_URL_DOCS, SWAGGER_URL, Messages
-from .exceptions import InvalidAPIUsage, ShortIDGenerationError
+from .exceptions import InvalidAPIUsage
 from .models import URLMap
 
 
@@ -23,9 +23,7 @@ def create_short():
                 short=data.get('custom_id')
             ).get_short_url()
         }), HTTPStatus.CREATED
-    except ValueError as message:
-        raise InvalidAPIUsage(str(message))
-    except ShortIDGenerationError as e:
+    except (ValueError, URLMap.ShortGenerationError) as e:
         raise InvalidAPIUsage(str(e))
 
 

@@ -15,10 +15,6 @@ class DiskUploadError(Exception):
         super().__init__(message)
 
 
-class ShortIDGenerationError(Exception):
-    """Кастомное исключение для ошибок генерации коротких ссылок"""
-
-
 class FileUploadError(Exception):
     """Кастомное исключение для ошибок загрузки файлов"""
 
