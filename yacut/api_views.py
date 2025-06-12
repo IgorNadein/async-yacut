@@ -1,10 +1,9 @@
 from http import HTTPStatus
 
 from flask import jsonify, request
-from flask_swagger_ui import get_swaggerui_blueprint
 
 from . import app
-from .constants import API_URL_DOCS, SWAGGER_URL, Messages
+from .constants import Messages
 from .exceptions import InvalidAPIUsage
 from .models import URLMap
 
@@ -35,10 +34,3 @@ def get_original_url(short):
             Messages.ID_NOT_FOUND, HTTPStatus.NOT_FOUND
         )
     return jsonify({'url': url_map.original})
-
-
-app.register_blueprint(get_swaggerui_blueprint(
-    SWAGGER_URL,
-    API_URL_DOCS,
-    config={'app_name': 'YaCut'}
-), url_prefix=SWAGGER_URL)

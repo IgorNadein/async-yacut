@@ -1,7 +1,8 @@
 from flask import current_app, flash, redirect, render_template, request
+from flask_swagger_ui import get_swaggerui_blueprint
 
 from . import app
-from .constants import Messages
+from .constants import API_URL_DOCS, SWAGGER_URL, Messages
 from .exceptions import DiskUploadError
 from .forms import FileUploadForm, URLMapForm
 from .models import URLMap
@@ -62,3 +63,9 @@ async def files():
             'index.html',
             form=form
         )
+
+app.register_blueprint(get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL_DOCS,
+    config={'app_name': 'YaCut'}
+), url_prefix=SWAGGER_URL)
