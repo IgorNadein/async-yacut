@@ -58,13 +58,12 @@ async def upload_to_disk(file, session):
                 url=str(download_resp.url)
             )
         download_data = await download_resp.json()
-    download_url = download_data['href']
-    return download_url
+    return download_data['href']
 
 
 async def upload_files_to_disk(files):
     async with aiohttp.ClientSession() as session:
-        return {
-            (file.filename, await upload_to_disk(file, session))
+        return [
+            await upload_to_disk(file, session)
             for file in files
-        }
+        ]

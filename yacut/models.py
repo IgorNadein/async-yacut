@@ -1,6 +1,5 @@
 import random
 from datetime import datetime, timezone
-from urllib.parse import urlparse
 
 from flask import url_for
 
@@ -8,7 +7,7 @@ from . import db
 from .constants import (ALLOWED_CHARS, ALLOWED_CHARS_PATTERN,
                         DEFAULT_SHORT_LENGTH, MAX_GENERATION_ATTEMPTS,
                         MAX_LENGTH_ORIGINAL, MAX_LENGTH_SHORT,
-                        REDIRECT_TO_URL_VIEW_NAME, RESERVED_SHORT, Messages)
+                        REDIRECT_TO_URL_VIEW_NAME, RESERVED_SHORTS, Messages)
 from .exceptions import ShortIDGenerationError
 
 
@@ -38,37 +37,28 @@ class URLMap(db.Model):
         if check_chars and not ALLOWED_CHARS_PATTERN.match(short):
             raise ValueError(Messages.INVALID_SHORT_NAME)
 
-        if check_reserved and short in RESERVED_SHORT:
+        if check_reserved and short in RESERVED_SHORTS:
             raise ValueError(Messages.NAME_CONFLICT)
 
-        if check_existence and URLMap.get_short(short=short):
+        if check_existence and URLMap.get(short=short):
             raise ValueError(Messages.NAME_CONFLICT)
 
     @staticmethod
-    def validate_original(original):
-        """Централизованная валидация ссылок"""
-        if len(original) > MAX_LENGTH_ORIGINAL:
-            raise ValueError(Messages.INVALID_LINK_SIZE)
-        parsed = urlparse(original)
-        if not parsed.scheme or not parsed.netloc:
-            raise ValueError(Messages.INVALID_URL)
-        if parsed.scheme not in ('http', 'https'):
-            raise ValueError(Messages.INVALID_URL)
-
-    @staticmethod
-    def create(original, short=None):
-        URLMap.validate_original(original)
+    def create(original, short=None, form=None):
+        if not form:
+            if len(original) > MAX_LENGTH_ORIGINAL:
+                raise ValueError(Messages.INVALID_LINK_SIZE)
+            if short:
+                URLMap.validate_short(short)
         if not short:
             short = URLMap.get_unique_short()
-        else:
-            URLMap.validate_short(short)
-        new_url = URLMap(original=original, short=short)
-        db.session.add(new_url)
+        url_map_record = URLMap(original=original, short=short)
+        db.session.add(url_map_record)
         db.session.commit()
-        return new_url
+        return url_map_record
 
     @staticmethod
-    def get_short(short):
+    def get(short):
         return URLMap.query.filter_by(short=short).first()
 
     @staticmethod
@@ -86,7 +76,7 @@ class URLMap(db.Model):
                     k=DEFAULT_SHORT_LENGTH
                 )
             )
-            if not URLMap.get_short(short=short):
+            if not URLMap.get(short=short):
                 return short
         raise ShortIDGenerationError(
             Messages.GENERATION_ERROR
@@ -94,11 +84,9 @@ class URLMap(db.Model):
 
     @staticmethod
     def batch_create(urls):
-        return [{
-            'name': filename,
-            'url_map': URLMap.create(original=url),
-            'download_url': url
-        } for filename, url in urls
+        return [
+            URLMap.create(original=url, form=True)
+            for url in urls
         ]
 
     def get_short_url(self):

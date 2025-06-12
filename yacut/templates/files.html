@@ -36,16 +36,16 @@
               <div class="table-responsive">
                 <table class="table table-hover">
                   <tbody>
-                    {% for result in results %}
+                    {% for file, url_map_record in results %}
                       <tr>
-                        <td>{{ result.name }}</td>
+                        <td>{{ file.filename }}</td>
                         <td>
                           <a
-                            href="{{ result.url_map.get_short_url() }}"
+                            href="{{ url_map_record.get_short_url() }}"
                             target="_blank"
                             class="text-break"
                           >
-                            {{ result.url_map.get_short_url() }}
+                            {{ url_map_record.get_short_url() }}
                           </a>
                         </td>
                       </tr>

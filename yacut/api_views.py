@@ -4,10 +4,9 @@ from flask import jsonify, request
 from flask_swagger_ui import get_swaggerui_blueprint
 
 from . import app
-from .constants import Messages
-from .error_handlers import InvalidAPIUsage
+from .constants import API_URL_DOCS, SWAGGER_URL, Messages
+from .exceptions import InvalidAPIUsage, ShortIDGenerationError
 from .models import URLMap
-from .constants import SWAGGER_URL, API_URL_DOCS
 
 
 @app.route('/api/id/', methods=['POST'])
@@ -26,11 +25,13 @@ def create_short():
         }), HTTPStatus.CREATED
     except ValueError as message:
         raise InvalidAPIUsage(str(message))
+    except ShortIDGenerationError as e:
+        raise InvalidAPIUsage(str(e))
 
 
 @app.route('/api/id/<short>/', methods=['GET'])
 def get_original_url(short):
-    url_map = URLMap.get_short(short=short)
+    url_map = URLMap.get(short=short)
     if not url_map:
         raise InvalidAPIUsage(
             Messages.ID_NOT_FOUND, HTTPStatus.NOT_FOUND
